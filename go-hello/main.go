@@ -20,17 +20,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
-	dataSource := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp" + os.Getenv("MYSQL_HOST") + ":" + os.Getenv("MYSQL_PORT") + "/hello"
+	dataSource := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(" + os.Getenv("MYSQL_HOST") + ":" + os.Getenv("MYSQL_PORT") + ")/hello"
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
-		fmt.Fprintf(w, "Error")
+		fmt.Fprintf(w, "Connection Error")
 		return
 	}
 
 	defer db.Close()
 	rows, err := db.Query("SELECT * FROM tasks")
 	if err != nil {
-		fmt.Fprintf(w, "Error")
+		fmt.Fprintf(w, "SQL Error")
 		return
 	}
 
@@ -39,7 +39,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 		task := Task{}
 		err = rows.Scan(&task.ID, &task.Name)
 		if err != nil {
-			fmt.Fprintf(w, "Error")
+			fmt.Fprintf(w, "Scan Error")
 			return
 		}
 		tasks = append(tasks, task)
