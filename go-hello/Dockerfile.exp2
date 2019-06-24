@@ -1,0 +1,10 @@
+FROM golang:alpine AS build
+
+WORKDIR /go/src/app
+COPY . .
+RUN CGO_ENABLED=0 go build -o hello main.go
+
+FROM busybox
+COPY --from=build /go/src/app/hello /usr/local/bin/hello
+
+CMD ["/usr/local/bin/hello"]
